@@ -10,9 +10,24 @@ if (!port) {
   throw new Error("Port is not defined in the env file.");
 }
 
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://main--charitybridge.netlify.app/"]
+    : ["http://localhost:5173"];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);  // allow requests with no origins (e.g., mobile apps or curl)
+      }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);  // allow if the origin is in the allowed list
+      } else {
+        callback(new Error("Not allowed by CORS"));  // deny if the origin is not allowed
+      }
+    },
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,4 +41,6 @@ app.use("*", (req, res) => {
 
 app.use(errorHandling);
 
-app.listen(port, () => console.log(`Charity Bridge listening on http://localhost${port}`));
+app.listen(port, () =>
+  console.log(`Charity Bridge listening on http://localhost${port}`)
+);
