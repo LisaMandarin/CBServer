@@ -1,0 +1,40 @@
+const { Client, Users } = require("node-appwrite");
+
+const endpoint = process.env.ENDPOINT;
+const projectID = process.env.PROJECT_ID;
+const apiKey = process.env.API_KEY;
+
+const client = new Client().setEndpoint(endpoint).setProject(projectID).setKey(apiKey)
+
+const users = new Users(client);
+
+const getUserById = async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid userId"
+            })
+        } else {
+            const result = await users.get(userId)
+
+            if (!result) {
+                return res.status(400).json({
+                    success: false,
+                    message: `User ${userId} not found`
+                })
+            } else {
+                return res.status(200).json({
+                    success: true,
+                    message: result
+                })
+            }
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { getUserById }
