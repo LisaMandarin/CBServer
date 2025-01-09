@@ -12,7 +12,7 @@ if (!port) {
 
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? ["https://charitybridge.netlify.app", "https://cb-server-9jxe.onrender.com"]
+    ? ["https://charitybridge.netlify.app", "https://main--charitybridge.netlify.app", "https://cb-server-9jxe.onrender.com"]
     : ["http://localhost:5173", "http://localhost:3000"];
 app.use(
   cors({
