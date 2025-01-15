@@ -4,8 +4,8 @@ const cors = require("cors");
 const serverless = require("serverless-http")
 
 const app = express();
-const route = require("./routes");
-const errorHandling = require("./utils/errorHandling");
+const route = require("../../routes");
+const errorHandling = require("../../utils/errorHandling");
 
 if (!port) {
   throw new Error("Port is not defined in the env file.");
