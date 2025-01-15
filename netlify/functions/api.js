@@ -1,10 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const serverless = require("serverless-http")
+
 const app = express();
 const route = require("./routes");
 const errorHandling = require("./utils/errorHandling");
-const port = process.env.PORT;
 
 if (!port) {
   throw new Error("Port is not defined in the env file.");
@@ -12,7 +13,7 @@ if (!port) {
 
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? ["https://charitybridge.netlify.app", "https://main--charitybridge.netlify.app", "https://cb-server-9jxe.onrender.com"]
+    ? ["https://*.netlify.app"]
     : ["http://localhost:5173", "http://localhost:3000"];
 app.use(
   cors({
@@ -28,9 +29,12 @@ app.use(
     },
   })
 );
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Routes
 app.use("/", route);
 app.use("*", (req, res) => {
   res.status(404).json({
@@ -41,6 +45,4 @@ app.use("*", (req, res) => {
 
 app.use(errorHandling);
 
-app.listen(port, () =>
-  console.log(`Charity Bridge listening on http://localhost:${port}`)
-);
+module.exports.handler = serverless(app)
